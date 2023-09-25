@@ -1,0 +1,5 @@
+# Ignore WordPress core files
+/wordpress/wp-config.php
+/wordpress/wp-content/debug.log
+/wordpress/wp-content/cache/
+/wordpress/wp-content/upgrade/
