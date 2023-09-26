@@ -1,0 +1,65 @@
+name: PHP Coding Standards
+
+# This workflow is triggered whenever commits are pushed to the main branch or manually triggered using the "workflow_dispatch" event
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  phpcs:
+    name: PHP coding standards
+    runs-on: ubuntu-latest
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
+      contents: write
+    steps:
+      # Checkout the repository to access its content.
+      - uses: actions/checkout@v4.1.0
+        name: 'Checkout repository'
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      # Cache Composer dependencies to speed up future runs.
+      - uses: actions/cache@v3.3.2
+        env:
+          cache-name: cache-composer-dependencies
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      # Set up the PHP environment.
+      - name: Setup PHP Action
+        uses: shivammathur/setup-php@2.26.0 
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer, cs2pr
+
+      - name: Log debug information
+        run: |
+          php --version
+          composer --version
+
+      - name: Install Composer dependencies
+        run: |
+            composer install --prefer-dist --no-suggest --no-progress --no-ansi --no-interaction
+            echo "${PWD}/vendor/bin" >> $GITHUB_PATH
+
+      - name: Run & fix PHP Code Sniffer
+        uses: shalior/wordpress-phpcs-action@v1.0.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          use_default_configuration_file: true
+          phpcs_args: '-n' # ignore warnings
+
+      # Automatically commit the fixes made by PHP Code Sniffer.
+      - uses: stefanzweifel/git-auto-commit-action@v4 
+        with:
+          commit_message: Fix PHPCS errors
+

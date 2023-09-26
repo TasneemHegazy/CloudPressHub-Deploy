@@ -1,11 +1,10 @@
 name: Continuous Deployment Workflow
 
-# This workflow is triggered whenever commits are pushed to the main branch
+# This workflow is triggered whenever commits are pushed to the main branch or manually triggered using the "workflow_dispatch" event.
 on:
   push:
     branches:
       - main
-      - 'test-workflow'
   workflow_dispatch:
 
       
@@ -14,17 +13,17 @@ defaults:
     shell: bash
 
 jobs:
-  # ======================================================
-  # Deploy the main branch to EC2 server
-  # ======================================================
+  # Deploy the main branch to EC2 server.
   deploy_development:
     name: 'Deploy to EC2'
     runs-on: ubuntu-latest
     
     steps:
+      # Checkout the repository to access its content.
       - uses: actions/checkout@v4.1.0
         name: 'Checkout repository'
 
+      # Deploy files to the server using rsync.
       - uses: Burnett01/rsync-deployments@6.0.0
         name: 'Deploy to server'
         with:
