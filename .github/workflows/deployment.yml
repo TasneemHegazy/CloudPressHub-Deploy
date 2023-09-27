@@ -4,9 +4,8 @@ name: Continuous Deployment Workflow
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch:
-
       
 defaults:
   run:
@@ -33,6 +32,14 @@ jobs:
           remote_host: ${{ secrets.HOSTNAME }}
           remote_user: ${{ secrets.REMOTE_USER }}
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Send a message to a Slack channel.
+      - name: Slack Notification 
+        uses: rtCamp/action-slack-notify@v2
+        if: failure() # Only send a message if the job fails.
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        
 
         
    
