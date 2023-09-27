@@ -3,7 +3,7 @@
         'name' => 'composer/composer',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '05f591cc4340611a8fdac8c7ecf321f7a77b3674',
+        'reference' => 'aa4f89a56afca586ed3653a1f5624aa7e3ef7c86',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -31,7 +31,7 @@
         'composer/composer' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '05f591cc4340611a8fdac8c7ecf321f7a77b3674',
+            'reference' => 'aa4f89a56afca586ed3653a1f5624aa7e3ef7c86',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
