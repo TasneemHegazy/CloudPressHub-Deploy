@@ -1,5 +1,6 @@
 name: 'Welcome New Contributors'
 
+# Trigger the workflow when new issues or pull requests are opened
 on:
   issues:
     types: [opened]
