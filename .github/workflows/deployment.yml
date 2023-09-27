@@ -2,12 +2,11 @@ name: Continuous Deployment Workflow
 
 # This workflow is triggered whenever commits are pushed to the main branch or manually triggered using the "workflow_dispatch" event.
 on:
-  push:
-    branches:
-      - main
-      - test-workflow
   workflow_dispatch:
-
+    inputs:
+      PR_number:
+        description: 'Pull request number'
+        required: true
       
 defaults:
   run:
@@ -20,6 +19,28 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Verify Pull Request Number
+        uses: actions/github-script@v6
+        id: verify_pr_number
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: string
+          script: |
+            const response = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ github.event.inputs.PR_number }}
+            });
+            
+            // Check if the pull request is open
+            if (response.data.number !== ${{ github.event.inputs.PR_number }}) {
+              throw new Error('Pull request is not open or number is not valid!');
+            } else {
+              console.log("PR ref: " + response.data.head.ref);
+              return response.data.head.ref;
+            }
+
+
       # Checkout the repository to access its content.
       - uses: actions/checkout@v4.1.0
         name: 'Checkout repository'
@@ -36,6 +57,23 @@ jobs:
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
 
+      - name: Update status
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Deployed to the server
+            > PR #${{ github.event.inputs.PR_number }} has been deployed successfully
+            
+            URL: http://${{ steps.apply_output.outputs.stdout }}`;
+
+            github.rest.issues.createComment({
+              issue_number: ${{ github.event.inputs.PR_number }},
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Thanks for reporting!'
+            })
+
       # Send a message to a Slack channel.
       - name: Slack Notification 
         uses: rtCamp/action-slack-notify@v2
@@ -43,4 +81,6 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         
-   
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
