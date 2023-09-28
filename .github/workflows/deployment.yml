@@ -1,6 +1,6 @@
 name: Continuous Deployment Workflow
 
-# This workflow is triggered whenever commits are pushed to the main branch or manually triggered using the "workflow_dispatch" event
+# This workflow is triggered whenever commits are pushed to the master branch or manually triggered using the "workflow_dispatch" event
 on:
   push:
     branches:
@@ -14,6 +14,7 @@ jobs:
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
       contents: write
+      # Set up a MySQL service
     services:
       mysql:
         image: mysql:latest
@@ -86,7 +87,7 @@ jobs:
           done
         timeout-minutes: 1
   
-  # Deploy the main branch to EC2 server.
+  # Deploy the master branch to EC2 server.
   deploy_development:
     needs: phpcs
     name: 'Deploy to EC2'
@@ -108,10 +109,10 @@ jobs:
           remote_user: ${{ secrets.REMOTE_USER }}
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # Send a message to a Slack channel.
+      # Send a message to a Slack channel if the job fails.
       - name: Slack Notification 
-        uses: rtCamp/action-slack-notify@v2
         if: failure() # Only send a message if the job fails.
+        uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         
