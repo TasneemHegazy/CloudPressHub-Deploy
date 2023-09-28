@@ -21,7 +21,7 @@ jobs:
         ports:
           - '3306:3306'
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
           MYSQL_USER: ${{ secrets.MYSQL_USER }}
           MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
           MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
@@ -87,10 +87,10 @@ jobs:
           done
         timeout-minutes: 1
   
-  # Deploy the master branch to EC2 server.
-  deploy_development:
+  # Deploy to staging server.
+  deploy_staging:
     needs: phpcs
-    name: 'Deploy to EC2'
+    name: 'Deploy to Staging'
     runs-on: ubuntu-latest
     
     steps:
@@ -100,14 +100,36 @@ jobs:
 
       # Deploy files to the server using rsync.
       - uses: Burnett01/rsync-deployments@6.0.0
-        name: 'Deploy to server'
+        name: 'Deploy to staging server'
         with:
           switches: --recursive --exclude=.git -rlgoDzvc -i --delete
           path: .
-          remote_path: ${{ secrets.REMOTE_TARGET }}
-          remote_host: ${{ secrets.HOSTNAME }}
-          remote_user: ${{ secrets.REMOTE_USER }}
-          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          remote_path: ${{ secrets.STAGING_TARGET }}
+          remote_host: ${{ secrets.STAGING_HOSTNAME }}
+          remote_user: ${{ secrets.STAGING_REMOTE_USER }}
+          remote_key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+
+  # Deploy to production server.
+  deploy_production:
+    needs: deploy_staging
+    name: 'Deploy to Production'
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checkout the repository to access its content.
+      - uses: actions/checkout@v4.1.0
+        name: 'Checkout repository'
+
+      # Deploy files to the server using rsync.
+      - uses: Burnett01/rsync-deployments@6.0.0
+        name: 'Deploy to production server'
+        with:
+          switches: --recursive --exclude=.git -rlgoDzvc -i --delete
+          path: .
+          remote_path: ${{ secrets.PRODUCTION_TARGET }}
+          remote_host: ${{ secrets.PRODUCTION_HOSTNAME }}
+          remote_user: ${{ secrets.PRODUCTION_REMOTE_USER }}
+          remote_key: ${{ secrets.PRODUCTION_SSH_PRIVATE_KEY }}
 
       # Send a message to a Slack channel if the job fails.
       - name: Slack Notification 
