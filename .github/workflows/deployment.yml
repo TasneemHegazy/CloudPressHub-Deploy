@@ -70,11 +70,6 @@ jobs:
           use_default_configuration_file: true
           phpcs_args: '-n' # ignore warnings
 
-      # Automatically commit the fixes made by PHP Code Sniffer.
-      - uses: stefanzweifel/git-auto-commit-action@v4 
-        with:
-          commit_message: Fix PHPCS errors
-
       - name: Set up WordPress and WordPress Test Library
         uses: sjinks/setup-wordpress-test-library@master
         with:
