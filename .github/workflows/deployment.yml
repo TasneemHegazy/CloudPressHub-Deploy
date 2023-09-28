@@ -87,6 +87,7 @@ jobs:
     needs: phpcs
     name: 'Deploy to Staging'
     runs-on: ubuntu-latest
+    environment: staging
     
     steps:
       # Checkout the repository to access its content.
@@ -109,6 +110,8 @@ jobs:
     needs: deploy_staging
     name: 'Deploy to Production'
     runs-on: ubuntu-latest
+    environment:
+      name: production
     
     steps:
       # Checkout the repository to access its content.
@@ -126,9 +129,8 @@ jobs:
           remote_user: ${{ secrets.PRODUCTION_REMOTE_USER }}
           remote_key: ${{ secrets.PRODUCTION_SSH_PRIVATE_KEY }}
 
-      # Send a message to a Slack channel if the job fails.
+      # Send a message to a Slack channel.
       - name: Slack Notification 
-        if: failure() # Only send a message if the job fails.
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
