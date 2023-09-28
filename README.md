@@ -2,7 +2,7 @@
 
 [![Continuous Deployment Workflow](https://github.com/TasneemHegazy/CloudPressHub-Deploy/actions/workflows/deployment.yml/badge.svg)](https://github.com/TasneemHegazy/CloudPressHub-Deploy/actions/workflows/deployment.yml)
 
-_**Hey there! This repository represents a state-of-the-art implementation of CI/CD for a WordPress website, powered by the LEMP (Linux, Nginx, MySQL, PHP) stack, and streamlined by GitHub Actions. while following best practices for security, performance, and automation.**_
+_**Hey there! 👋😄 This repository represents a state-of-the-art implementation of CI/CD for a WordPress website, powered by the LEMP (Linux, Nginx, MySQL, PHP) stack, and streamlined by GitHub Actions. This GitHub Actions workflow automates the continuous integration and deployment (CI/CD) process for projects following trunk-based development. while following best practices for security, performance, and automation.**_
 
 ## Tech Stack 🛠️
 
@@ -22,6 +22,8 @@ _**Hey there! This repository represents a state-of-the-art implementation of CI
 
 - **CI/CD Automation:** GitHub Actions is my CI/CD automation tool of choice, ensuring seamless and efficient deployment and making life easier.
 
+- **Trunk-Based Development:** I practice trunk-based development, making frequent small code updates directly to the master repository (the "trunk"). This approach encourages continuous integration, simplifies collaboration, and eliminates the need for separate environment branches.
+
 ## Features 🌟
 
 - **Enhanced Security:** I follow industry best practices to ensure the highest level of security for your WordPress website, like strong passwords and limited user access. 
@@ -29,8 +31,6 @@ _**Hey there! This repository represents a state-of-the-art implementation of CI
 - **Automated Deployment:** My GitHub Actions workflow handles the automated deployment of my WordPress website to my AWS EC2 instances.
 
 - **Dependency Management:** I cache Composer dependencies to speed up future runs and run PHP Code Sniffer to maintain code quality. Any fixes suggested by PHP Code Sniffer are automatically committed.
-
-- **Effortless Deployment:** The master branch is automatically deployed to my EC2 server using rsync, making continuous deployment a breeze.
 
 - **Slack Integration:** Receive real-time updates on my project's status by sending messages to a designated Slack channel. I'll be instantly informed in case of job failures.
 
@@ -46,16 +46,18 @@ _**Hey there! This repository represents a state-of-the-art implementation of CI
 - [Server Provisioning](#-server-provisioning)
 - [Nginx, MySQL/MariaDB, and PHP Setup](#-nginx-mysqlmariadb-and-php-setup)
 - [WordPress Website Configuration](#-wordpress-website-configuration)
-- [GitHub Repository Setup](#-github-repository-setup)
+- [GitHub Repository Setup](#github-repository-setup)
 - [GitHub Actions Workflow](#-github-actions-workflow)
-  - [Fork or Clone This Repository](#1-fork-or-clone-this-repository)
-  - [Configure GitHub Secrets 🤐](#2-configure-github-secrets-)
-  - [Configure WordPress (if applicable)](#3-configure-wordpress-if-applicable)
-  - [Customize the Workflow (Optional)](#4-customize-the-workflow-optional)
-  - [Push to Master Branch 🎆](#5-push-to-master-branch-)
-  - [Monitor Deployment](#6-monitor-deployment)
+   - [Workflow Overview](#workflow-overview)
+   - [How to Use](#how-to-use)
+     - [1. Fork or Clone This Repository](#1-fork-or-clone-this-repository)
+     - [2. Configure Secrets 🤐](#2-configure-github-secrets-)
+     - [3. Workflow Trigger](#3-workflow-trigger)
+     - [4. Customize Environment Configuration](#4-customize-the-workflow-optional)
+     - [5. Save the Workflow](#5-save-the-workflow)
+     - [6. Manual Production Deployment](#6-manual-production-deployment)
+     - [7. Monitor Deployment](#7-monitor-deployment)
 - [Welcome New Contributors Workflow 👋](#welcome-new-contributors-workflow-)
-
 
 ## Prerequisites
 
@@ -216,9 +218,32 @@ git push -u origin master
 
 ## 🛠️ GitHub Actions Workflow
 
-This workflow is designed to be super-easy to integrate into your own WordPress project or any other PHP-based project. 
+This workflow is designed to be super-easy to integrate into your own WordPress project or any other PHP-based project. It's designed to ensure code quality and deploy changes to both staging and production environments from the master branch.
 
-## Getting Started 🚀
+## Workflow Overview
+
+1. **PHP Coding Standards Check (PHPCS)**
+   - Runs PHP Code Sniffer to enforce coding standards.
+   - Utilizes a MySQL service for database-related checks.
+   - Caches Composer dependencies for faster subsequent runs.
+
+2. **Deploy to Staging**
+   - Deploys the application to the staging environment.
+   - Uses rsync to transfer files securely to the staging server.
+
+3. **Deploy to Production (Manual)**
+   - **Note:** Production deployment is configured for manual approval.
+   - To deploy to production, follow these steps:
+     - Review the changes in the production environment.
+     - Approve the deployment.
+     - Manually trigger the production deployment workflow.
+
+4. **Slack Notification**
+   - Sends a notification to a Slack channel upon successful deployment to staging or production.
+
+## How to Use
+
+To implement this CI/CD workflow for trunk-based development, follow these steps:
 
 ### 1. Fork or Clone This Repository
 
@@ -229,39 +254,56 @@ You've got two options: fork this repository if you want to make it your own, or
 git clone https://github.com/TasneemHegazy/CloudPressHub-Deploy.git
 ```
 
-### 2. Configure GitHub Secrets 🤐
+### 2. Configure Secrets 🤐
 
-In your repository settings, head over to the "Secrets" section and sprinkle in these secrets:
+Ensure that you have set up the required secrets in your GitHub repository for the following environments:
 
-- `MYSQL_ROOT_PASSWORD`: Your MySQL root password.
-- `MYSQL_USER`: Your MySQL username.
-- `MYSQL_PASSWORD`: Your MySQL password.
-- `MYSQL_DATABASE`: Your MySQL database name.
-- `MYSQL_HOST`: MySQL host (default: 127.0.0.1).
-- `REMOTE_TARGET`: Remote target directory for deployment.
-- `HOSTNAME`: Hostname for the remote server.
-- `REMOTE_USER`: Remote server username.
-- `SSH_PRIVATE_KEY`: SSH private key for the secret handshake.
-- `SLACK_WEBHOOK`: Slack webhook URL for notifications.
+- **Staging Environment:**
+  - `STAGING_TARGET`: The target path on the staging server where files should be deployed.
+  - `STAGING_HOSTNAME`: The hostname or IP address of the staging server.
+  - `STAGING_REMOTE_USER`: The SSH username for accessing the staging server.
+  - `STAGING_SSH_PRIVATE_KEY`: The private SSH key for authentication to the staging server.
 
-### 3. Configure WordPress (if applicable)
+- **Production Environment:**
+  - `PRODUCTION_TARGET`: The target path on the production server where files should be deployed.
+  - `PRODUCTION_HOSTNAME`: The hostname or IP address of the production server.
+  - `PRODUCTION_REMOTE_USER`: The SSH username for accessing the production server.
+  - `PRODUCTION_SSH_PRIVATE_KEY`: The private SSH key for authentication to the production server.
 
-If you're using this workflow for a WordPress project, set up your WordPress instance as needed.
+- **Database Configuration:**
+  - `MYSQL_ROOT_PASSWORD`: The MySQL root password for database-related checks.
+  - `MYSQL_USER`: The MySQL username for database-related checks.
+  - `MYSQL_PASSWORD`: The MySQL password for database-related checks.
+  - `MYSQL_DATABASE`: The name of the MySQL database for database-related checks.
 
-### 4. Customize the Workflow (Optional)
+- **Slack Notification:**
+  - `SLACK_WEBHOOK`: The Slack webhook URL for sending deployment notifications.
 
-You can customize the workflow defined in `.github/workflows/deployment.yml` to match your project's unique style. Adjust PHP versions, coding standards, or deployment settings.
+### 3. Workflow Trigger
 
-### 5. Push to Master Branch 🎆
+This workflow is triggered automatically on pushes to the master branch or can be manually triggered using the "workflow_dispatch" event.
 
-With everything set up, push your changes to the master branch. This will trigger the CD workflow automatically.
+### 4. Customize Environment Configuration
 
-```bash
-# Push your changes
-git push origin master
-```
+Modify the configuration in the workflow as needed to match your project's requirements. You can add additional steps, tests, or deployment actions to suit your specific needs.
 
-### 6. Monitor Deployment
+### 5. Save the Workflow
+
+Save this workflow configuration as a `.github/workflows/deployment.yml` file in your repository.
+
+### 6. Manual Production Deployment
+
+Production deployment is configured for manual approval. To deploy to production:
+
+1. Review the changes in the production environment.
+![Ask to Review Production](/ReadMeImages/ask-review-production.png)
+2. Approve the deployment.
+![Manual Production Deployment](/ReadMeImages/ApproveAndDeploy.png)
+3. Manually trigger the production deployment workflow.
+![Successful Production Deployment](/ReadMeImages/deployed-production.png)
+
+
+### 7. Monitor Deployment
 
 Head to the "Actions" tab in your GitHub repository to monitor the workflow in action. You'll see details of each workflow run, and if anything comes up, the workflow will let you know!
 
@@ -270,7 +312,7 @@ Head to the "Actions" tab in your GitHub repository to monitor the workflow in a
 This repository also includes a workflow to welcome new contributors when they open new issues or pull requests. 
 Whenever new issues or pull requests are opened, the workflow will send a welcome message to your contributors. 💌
 
-Feel free to explore, customize, and make these workflows your own, and make the most of automated deployments and contributor engagement! 😄✨
+_**Feel free to explore, customize, and make these workflows your own, and make the most of automated deployments and contributor engagement! 😄✨**_
 
 
 
