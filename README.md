@@ -1,11 +1,40 @@
 # 🚀 Automated WordPress Deployment with Nginx, LEMP Stack, and GitHub Actions
 
-_**This repository contains all the necessary code and configuration files
-to set up an automated deployment process for a WordPress website using
-Nginx as the web server, LEMP (Linux, Nginx, MySQL, PHP) stack, and
-GitHub Actions as the CI/CD automation tool, triggered whenever commits are pushed to the master branch or manually triggered using the "workflow_dispatch" event.
-The deployment process follows security best practices and ensures optimal performance of the
-website.**_
+[![Continuous Deployment Workflow](https://github.com/TasneemHegazy/CloudPressHub-Deploy/actions/workflows/deployment.yml/badge.svg)](https://github.com/TasneemHegazy/CloudPressHub-Deploy/actions/workflows/deployment.yml)
+
+_**Hey there! This repository represents a state-of-the-art implementation of CI/CD for a WordPress website, powered by the LEMP (Linux, Nginx, MySQL, PHP) stack, and streamlined by GitHub Actions. while following best practices for security, performance, and automation.**_
+
+## Tech Stack 🛠️
+
+- **Web Server:** I'm using Nginx web server, carefully configured for optimum website performance. Below are some of the optimizations I've implemented:
+
+   - **Caching:** I've added caching to make my website lightning-fast.
+
+   - **Gzip Compression:** Data gets a shrink-wrap treatment for faster transmission.
+
+- **Database:** MySQL/MariaDB ensures robust data management for my WordPress website, ensuring it runs smoothly.
+
+- **Hosting:** I host my website on AWS EC2 instances, providing scalability and reliability.
+
+- **SSL/TLS Encryption:** Secure communication between my server and clients is guaranteed through Let's Encrypt SSL/TLS certificates.
+
+- **Domain Names:** I utilize free domain names from [noip.com](https://www.noip.com/) to give my website a professional online identity.
+
+- **CI/CD Automation:** GitHub Actions is my CI/CD automation tool of choice, ensuring seamless and efficient deployment and making life easier.
+
+## Features 🌟
+
+- **Enhanced Security:** I follow industry best practices to ensure the highest level of security for your WordPress website, like strong passwords and limited user access. 
+
+- **Automated Deployment:** My GitHub Actions workflow handles the automated deployment of my WordPress website to my AWS EC2 instances.
+
+- **Dependency Management:** I cache Composer dependencies to speed up future runs and run PHP Code Sniffer to maintain code quality. Any fixes suggested by PHP Code Sniffer are automatically committed.
+
+- **Effortless Deployment:** The master branch is automatically deployed to my EC2 server using rsync, making continuous deployment a breeze.
+
+- **Slack Integration:** Receive real-time updates on my project's status by sending messages to a designated Slack channel. I'll be instantly informed in case of job failures.
+
+- **Contributor Engagement:** I also have a workflow in place to welcome new contributors when they open new issues or pull requests. Building a collaborative community is a priority.
 
 🌐 **Deployed Website URL:** [https://cloudpresshub.ddns.net](https://cloudpresshub.ddns.net)
 
@@ -13,6 +42,7 @@ website.**_
 
 ## Table of Contents
 
+- [Prerequisites](#prerequisites)
 - [Server Provisioning](#-server-provisioning)
 - [Nginx, MySQL/MariaDB, and PHP Setup](#-nginx-mysqlmariadb-and-php-setup)
 - [WordPress Website Configuration](#-wordpress-website-configuration)
@@ -41,7 +71,7 @@ Now, let's dive into the setup and deployment process step by step.
 
 ## 🛠️ Server Provisioning
 
-Let's start by getting our server up and running on AWS (or your cloud provider of choice). Here's the plan:
+Let's start by getting my server up and running on AWS (or your cloud provider of choice). Here's the plan:
 
 -   Provision an EC2 instance on AWS with a secure Linux distribution
     (e.g., Ubuntu 22.04).
@@ -155,7 +185,6 @@ cd /var/www/html/
 
    On your server, navigate to your WordPress project directory:
 
-    ```bash
     cd /var/www/html/wordpress
 
     # Initialize a Git repository
@@ -235,15 +264,6 @@ git push origin master
 ### 6. Monitor Deployment
 
 Head to the "Actions" tab in your GitHub repository to monitor the workflow in action. You'll see details of each workflow run, and if anything comes up, the workflow will let you know!
-
-## Welcome New Contributors Workflow
-
-This repository also includes a workflow to welcome new contributors when they open new issues or pull requests. You can use this workflow as is, or customize it to suit your project's welcome message.
-
-Whenever new issues or pull requests are opened, the workflow will send a welcome message to contributors.
-
-Feel free to explore the workflows in this repository, adapt them to your specific project requirements, and make the most of automated deployments and contributor engagement.
-
 
 ## Welcome New Contributors Workflow 👋
 
