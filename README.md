@@ -2,7 +2,7 @@
 
 [![Continuous Deployment Workflow](https://github.com/TasneemHegazy/CloudPressHub-Deploy/actions/workflows/deployment.yml/badge.svg)](https://github.com/TasneemHegazy/CloudPressHub-Deploy/actions/workflows/deployment.yml)
 
-_**Hey there! 👋😄 This repository represents a state-of-the-art implementation of CI/CD for a WordPress website, powered by the LEMP (Linux, Nginx, MySQL, PHP) stack, and streamlined by GitHub Actions. This GitHub Actions workflow automates the continuous integration and deployment (CI/CD) process for projects following trunk-based development. while following best practices for security, performance, and automation.**_
+_**Hey there! 👋😄 This repository represents a state-of-the-art implementation of CI/CD for a WordPress website, powered by the LEMP (Linux, Nginx, MySQL, PHP) stack, and streamlined by GitHub Actions. This GitHub Actions workflow automates the continuous integration and deployment (CI/CD) process. while following best practices for security, performance, and automation.**_
 
 ## Tech Stack 🛠️
 
@@ -21,8 +21,6 @@ _**Hey there! 👋😄 This repository represents a state-of-the-art implementat
 - **Domain Names:** I utilize free domain names from [noip.com](https://www.noip.com/) to give my website a professional online identity.
 
 - **CI/CD Automation:** GitHub Actions is my CI/CD automation tool of choice, ensuring seamless and efficient deployment and making life easier.
-
-- **Trunk-Based Development:** I practice trunk-based development, making frequent small code updates directly to the master repository (the "trunk"). This approach encourages continuous integration, simplifies collaboration, and eliminates the need for separate environment branches.
 
 ## Features 🌟
 
@@ -243,7 +241,7 @@ This workflow is designed to be super-easy to integrate into your own WordPress 
 
 ## How to Use
 
-To implement this CI/CD workflow for trunk-based development, follow these steps:
+To implement this CI/CD workflow, follow these steps:
 
 ### 1. Fork or Clone This Repository
 
